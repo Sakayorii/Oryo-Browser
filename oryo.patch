@@ -1,0 +1,68 @@
+--- ui/base/cursor/cursor_factory.cc
++++ ui/base/cursor/cursor_factory.cc
+@@ -58,6 +58,11 @@
+ 
+ scoped_refptr<PlatformCursor> CursorFactory::GetDefaultCursor(
+     mojom::CursorType type) {
++  if (type == mojom::CursorType::kPointer) {
++    int resource_id = IDR_CUSTOM_ORYO_CURSOR_POINTER;
++    gfx::ImageSkia* image = ui::ResourceBundle::GetSharedInstance().GetImageSkiaNamed(resource_id);
++    if (image) return CreateImageCursor(*image, gfx::Point(0, 0));
++  }
+   NOTIMPLEMENTED();
+   return nullptr;
+ }
+--- chrome/renderer/chrome_content_renderer_client.cc
++++ chrome/renderer/chrome_content_renderer_client.cc
+@@ -45,6 +45,10 @@
+ void ChromeContentRendererClient::RenderFrameCreated(
+     content::RenderFrame* render_frame) {
++  blink::WebLocalFrame* frame = render_frame->GetWebFrame();
++  if (frame) {
++    frame->ExecuteScript(blink::WebString::FromUTF8("window.__oryo_api = { init: true };"));
++  }
+   ChromeRenderFrameObserver* observer =
+       new ChromeRenderFrameObserver(render_frame);
+ }
+--- components/metrics/metrics_service.cc
++++ components/metrics/metrics_service.cc
+@@ -100,6 +100,7 @@
+ }
+ 
+ void MetricsService::Start() {
++  return;
+   if (recording_state_ == RECORDING)
+     return;
+ }
+--- chrome/browser/performance_manager/performance_manager_impl.cc
++++ chrome/browser/performance_manager/performance_manager_impl.cc
+@@ -20,6 +20,11 @@
+ #include "base/process/process.h"
+ 
++void PerformanceManagerImpl::ToggleGamingMode(bool enabled) {
++  if (enabled) {
++    base::Process::Current().SetPriority(base::Process::Priority::kBestEffort);
++  } else {
++    base::Process::Current().SetPriority(base::Process::Priority::kUserBlocking);
++  }
++}
++
+--- chrome/browser/profiles/profile.cc
++++ chrome/browser/profiles/profile.cc
+@@ -35,6 +35,21 @@
+ #include <windows.h>
+ 
++void UpdateDiscordRichPresence(const std::string& active_media_title) {
++  HANDLE hPipe = CreateFile(TEXT("\\\\\\\\.\\\\pipe\\\\discord-ipc-0"),
++                            GENERIC_READ | GENERIC_WRITE,
++                            0, NULL, OPEN_EXISTING, 0, NULL);
++  if (hPipe != INVALID_HANDLE_VALUE) {
++    std::string payload = "{\\"cmd\\":\\"SET_ACTIVITY\\",\\"args\\":{\\"pid\\":" + std::to_string(GetCurrentProcessId()) + ",\\"activity\\":{\\"details\\":\\"Watching: " + active_media_title + "\\"}}}";
++    DWORD bytesWritten;
++    WriteFile(hPipe, payload.c_str(), payload.length(), &bytesWritten, NULL);
++    CloseHandle(hPipe);
++  }
++}
++
+ Profile::Profile() {
+ }
