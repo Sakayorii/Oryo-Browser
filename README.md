@@ -1,38 +1,38 @@
 # Oryo Browser
 
-D�y l� d? �n tr�nh duy?t ma ngu?n m? Oryo du?c ph�t tri?n v� t?i uu b?i Sakayori Studio. 
+Đây là dự án trình duyệt mã nguồn mở Oryo được phát triển và tối ưu bởi Sakayori Studio. 
 
-LUU Y QUAN TR?NG: Repository n�y KHONG ph?i l� to�n b? ma ngu?n (Full Source) c?a tr�nh duy?t. D�y ch? l� noi luu tr? c�c file c?u h�nh thuong hi?u (Rebrand), c�c b?n v� l?i v� ma ngu?n C++ t�y bi?n n�ng cao nh?m t?i uu h�a hi?u nang v� gi?m lu?ng RAM ti�u th? c?c h?n so v?i Chromium g?c.
+LƯU Ý QUAN TRỌNG: Repository này KHÔNG phải là toàn bộ mã nguồn (Full Source) của trình duyệt. Đây chỉ là nơi lưu trữ các file cấu hình thương hiệu (Rebrand), các bản vá lỗi và mã nguồn C++ tùy biến nâng cao nhằm tối ưu hóa hiệu năng và giảm lượng RAM tiêu thụ cực hạn so với Chromium gốc.
 
-## Y�u c?u h? th?ng (Requirements) d? build d? �n
-* H? di?u h�nh: Windows 10/11 64-bit (da b?t Developer Mode).
-* ? c?ng: Tr?ng t?i thi?u 100 GB (khuy?n kh�ch d�ng ? SSD t?c d? cao).
-* C�ng c? b?t bu?c: B? c�ng c? depot_tools c?a Google v� Microsoft Visual Studio (d?y d? g�i C++ v� Windows SDK tuong th�ch v?i Chromium).
+## Yêu cầu hệ thống (Requirements) để build dự án
+* Hệ điều hành: Windows 10/11 64-bit (đã bật Developer Mode).
+* Ổ cứng: Trống tối thiểu 100 GB (khuyến khích dùng ổ SSD tốc độ cao).
+* Công cụ bắt buộc: Bộ công cụ depot_tools của Google và Microsoft Visual Studio (đầy đủ gói C++ và Windows SDK tương thích với Chromium).
 
-## Hu?ng d?n c�i d?t v� d?ng b? d�nh cho Contributor
-D? c� d?y d? b? ngu?n v� b?t d?u l?p tr�nh, b?n c?n th?c hi?n theo c�c bu?c sau:
+## Hướng dẫn cài đặt và đồng bộ dành cho Contributor
+Để có đầy đủ bộ nguồn và bắt đầu lập trình, bạn cần thực hiện theo các bước sau:
 
-1. T?i to�n b? ma ngu?n Chromium g?c c?a Google (kho?ng 30-40 GB) v? m�y th�ng qua c�ng c? fetch c?a depot_tools:
+1. Tải toàn bộ mã nguồn Chromium gốc của Google (khoảng 30-40 GB) về máy thông qua công cụ fetch của depot_tools:
    fetch chromium
 
-2. Di chuy?n v�o thu m?c ngu?n v?a t?i:
+2. Di chuyển vào thư mục nguồn vừa tải:
    cd src
 
-3. Kh?i t?o k?t n?i Git t?i repository Oryo n�y:
+3. Khởi tạo kết nối Git tới repository Oryo này:
    git init
    git remote add origin https://github.com/Sakayorii/Oryo-Browser.git
 
-4. Ti?n h�nh k�o ma ngu?n t�y bi?n c?a Oryo v? d? ghi d� t? d?ng v�o c?u tr�c thu m?c g?c:
+4. Tiến hành kéo mã nguồn tùy biến của Oryo về để ghi đè tự động vào cấu trúc thư mục gốc:
    git pull origin main --allow-unrelated-histories
 
-5. D?ng b? l?i c�c thu vi?n b�n th? ba c?a Google:
+5. Đồng bộ lại các thư viện bên thứ ba của Google:
    gclient sync
 
-## L?nh t?o file c?u h�nh v� Build tr�nh duy?t
-Sau khi d?ng b? xong, b?n ch?y c�c l?nh sau b?ng CMD/PowerShell v?i quy?n Administrator d? ti?n h�nh bi�n d?ch:
+## Lệnh tạo file cấu hình và Build trình duyệt
+Sau khi đồng bộ xong, bạn chạy các lệnh sau bằng CMD/PowerShell với quyền Administrator để tiến hành biên dịch:
 
-1. N?p l?i so d? build graph d? h? th?ng nh?n di?n target m?i:
+1. Nạp lại sơ đồ build graph để hệ thống nhận diện target mới:
    gn gen out\Default
 
-2. Ti?n h�nh build phi�n b?n Oryo d?c b?n b?ng Ninja:
+2. Tiến hành build phiên bản Oryo độc bản bằng Ninja:
    autoninja -C out\Default oryo
